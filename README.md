@@ -1,4 +1,4 @@
-# musashinoshiski.github.io
+# www.musashino-ski.net website
 
 a website of static contents
 
