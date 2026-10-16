@@ -2,4 +2,4 @@
 
 a website of static contents
 
-* served by Cloudflare Pages
+* served by Cloudflare Workers
