@@ -27,6 +27,7 @@
       <div class="col-md-12">
         <ul class="nav nav-tabs">
           <li class="nav-item"> <a href="/" class="active nav-link"><i class="fa fa-home"></i> Home</a> </li>
+          <li class="nav-item"> <a href="/events.html" class="nav-link"><i class="fa fa-person-skiing"></i>&nbsp;2026-2027シーズンイベント</a> </li>
           <li class="nav-item"> <a href="/about.html" class="nav-link"><i class="fa fa-info-circle"></i>&nbsp;連盟について</a> </li>
           <li class="nav-item"> <a href="/clubs.html" class="nav-link"><i class="fa fa-users"></i>&nbsp;加盟団体紹介</a> </li>
           <li class="nav-item"> <a href="/agreement.html" class="nav-link"><i class="fa fa-file-contract"></i>&nbsp;規約</a> </li>
@@ -71,12 +72,12 @@
     window.onload = async () => {
       await markdown.ready;
       try {
-        const response = await fetch("./topnews.md");        
+        const response = await fetch("./topnews.md");
         if (!response.ok) {
           throw new Error("failed to read Markdown text");
-        }        
+        }
         const data = await response.text();
-        parseTopNewsMarkdown(data);        
+        parseTopNewsMarkdown(data);
       } catch (error) {
         console.error("error raised:", error);
       }
