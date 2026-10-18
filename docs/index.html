@@ -90,45 +90,60 @@
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
   <script>
-    $(function() {
-      // $.getでYAMLを取得し、done(成功時)とfail(失敗時)で処理を分ける
-      $.get('/topimages.yml')
-        .done(function(yamlText) {
-          // YAMLをパースして配列を取得
-          const images = jsyaml.load(yamlText).images;
+    document.addEventListener("DOMContentLoaded", async () => {
+      try {
+        // 1. YAMLファイルをサーバーから取得
+        const response = await fetch('/topimages.yml');
+        if (!response.ok) throw new Error("YAMLファイルの取得に失敗しました");
+        const yamlText = await response.text();
+
+        // 2. js-yamlを使ってテキストをJavaScriptのオブジェクトに変換
+        const data = jsyaml.load(yamlText);
+        const images = data.images;
+
+        const innerContainer = document.getElementById('carousel-inner-container');
+        const indicatorsContainer = document.getElementById('carousel-indicators-container');
+
+        // 3. ループ処理でHTML要素を生成
+        images.forEach((image, index) => {
+          // インジケーター（下の・）の生成
+          const indicator = document.createElement('button');
+          indicator.type = 'button';
+          indicator.dataset.bsTarget = '#hero-carousel';
+          indicator.dataset.bsSlideTo = index;
+          indicator.setAttribute('aria-label', `Slide ${index + 1}`);
           
-          let indicators = '';
-          let items = '';
-
-          // jQueryの$.eachループでHTML文字列を構築
-          $.each(images, function(i, img) {
-            const active = i === 0 ? 'active' : '';
-            const current = i === 0 ? 'aria-current="true"' : '';
-
-            // インジケーター（下の・）のHTML生成
-            indicators += `<button type="button" data-bs-target="#hero-carousel" data-bs-slide-to="${i}" class="${active}" ${current} aria-label="Slide ${i + 1}"></button>`;
-            
-            // 画像スライドのHTML生成
-            items += `
-              <div class="carousel-item ${active}">
-                <img src="${img.url}" class="d-block w-100 img-fluid" alt="${img.alt}">
-              </div>`;
-          });
-
-          // 生成したHTMLを一括でDOMに挿入（jQueryの .html() を使用）
-          $('#carousel-indicators-container').html(indicators);
-          $('#carousel-inner-container').html(items);
-        })
-        .fail(function(jqXHR, textStatus, errorThrown) {
-          console.error('カルーセルの生成に失敗しました:', textStatus);
+          // 画像スライドの生成
+          const item = document.createElement('div');
+          item.className = 'carousel-item';
           
-          // エラー時のフォールバック画像
-          $('#carousel-inner-container').html(`
-            <div class="carousel-item active">
-              <img src="/topimage.jpg" class="d-block w-100 img-fluid" alt="トップ画像">
-            </div>
-          `);
+          const img = document.createElement('img');
+          img.src = image.url;
+          img.alt = image.alt;
+          img.className = 'd-block w-100 img-fluid'; // Bootstrapクラスでレスポンシブ対応
+          
+          // 最初の1枚目だけ 'active' クラスを付与して表示させる（Bootstrapの仕様）
+          if (index === 0) {
+            indicator.classList.add('active');
+            indicator.setAttribute('aria-current', 'true');
+            item.classList.add('active');
+          }
+
+          item.appendChild(img);
+          indicatorsContainer.appendChild(indicator);
+          innerContainer.appendChild(item);
         });
+
+      } catch (error) {
+        console.error('カルーセルの生成中にエラーが発生しました:', error);
+        
+        // エラー時のフォールバック（通信失敗時などに従来の画像を1枚だけ表示）
+        document.getElementById('carousel-inner-container').innerHTML = `
+          <div class="carousel-item active">
+            <img src="/topimage.jpg" class="d-block w-100 img-fluid" alt="トップ画像">
+          </div>
+        `;
+      }
     });
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YWS22VDB37"></script>
