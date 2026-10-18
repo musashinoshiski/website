@@ -37,7 +37,7 @@
     </nav>
     <main>
       <section class="row">
-        <div id="hero-carousel" class="carousel slide mb-4" data-bs-ride="carousel">
+        <div id="hero-carousel" class="carousel slide mb-4" data-bs-ride="carousel" data-bs-interval="5000">
           <div class="carousel-indicators" id="carousel-indicators-container"></div>
           <div class="carousel-inner" id="carousel-inner-container"></div>
           <button class="carousel-control-prev" type="button" data-bs-target="#hero-carousel" data-bs-slide="prev">
@@ -92,37 +92,31 @@
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
       try {
-        // 1. YAMLファイルをサーバーから取得
         const response = await fetch('/topimages.yml');
-        if (!response.ok) throw new Error("YAMLファイルの取得に失敗しました");
+        if (!response.ok) throw new Error("failed to fetch YAML file");
         const yamlText = await response.text();
 
-        // 2. js-yamlを使ってテキストをJavaScriptのオブジェクトに変換
         const data = jsyaml.load(yamlText);
         const images = data.images;
 
         const innerContainer = document.getElementById('carousel-inner-container');
         const indicatorsContainer = document.getElementById('carousel-indicators-container');
 
-        // 3. ループ処理でHTML要素を生成
         images.forEach((image, index) => {
-          // インジケーター（下の・）の生成
           const indicator = document.createElement('button');
           indicator.type = 'button';
           indicator.dataset.bsTarget = '#hero-carousel';
           indicator.dataset.bsSlideTo = index;
           indicator.setAttribute('aria-label', `Slide ${index + 1}`);
           
-          // 画像スライドの生成
           const item = document.createElement('div');
           item.className = 'carousel-item';
           
           const img = document.createElement('img');
           img.src = image.url;
           img.alt = image.alt;
-          img.className = 'd-block w-100 img-fluid'; // Bootstrapクラスでレスポンシブ対応
+          img.className = 'd-block w-100 img-fluid';
           
-          // 最初の1枚目だけ 'active' クラスを付与して表示させる（Bootstrapの仕様）
           if (index === 0) {
             indicator.classList.add('active');
             indicator.setAttribute('aria-current', 'true');
@@ -135,9 +129,9 @@
         });
 
       } catch (error) {
-        console.error('カルーセルの生成中にエラーが発生しました:', error);
+        console.error('error happened in generating carousel:', error);
         
-        // エラー時のフォールバック（通信失敗時などに従来の画像を1枚だけ表示）
+        // fallbacking
         document.getElementById('carousel-inner-container').innerHTML = `
           <div class="carousel-item active">
             <img src="/topimage.jpg" class="d-block w-100 img-fluid" alt="トップ画像">
