@@ -37,7 +37,18 @@
     </nav>
     <main>
       <section class="row">
-        <img class="col-md-12 mt-2 img-fluid d-block mx-auto w-100" src="/topimage.jpg" alt="武蔵野市スキー連盟Webサイトのトップページの画像">
+        <div id="hero-carousel" class="carousel slide mb-4" data-bs-ride="carousel">
+          <div class="carousel-indicators" id="carousel-indicators-container"></div>
+          <div class="carousel-inner" id="carousel-inner-container"></div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#hero-carousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">&lt;</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#hero-carousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">&gt;</span>
+          </button>
+        </div>
       </section>
       <div class="row">
         <section class="col-md-6">
@@ -76,6 +87,49 @@
         console.error("error raised:", error);
       }
     };
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+  <script>
+    $(function() {
+      // $.getでYAMLを取得し、done(成功時)とfail(失敗時)で処理を分ける
+      $.get('topimages.yml')
+        .done(function(yamlText) {
+          // YAMLをパースして配列を取得
+          const images = jsyaml.load(yamlText).images;
+          
+          let indicators = '';
+          let items = '';
+
+          // jQueryの$.eachループでHTML文字列を構築
+          $.each(images, function(i, img) {
+            const active = i === 0 ? 'active' : '';
+            const current = i === 0 ? 'aria-current="true"' : '';
+
+            // インジケーター（下の・）のHTML生成
+            indicators += `<button type="button" data-bs-target="#hero-carousel" data-bs-slide-to="${i}" class="${active}" ${current} aria-label="Slide ${i + 1}"></button>`;
+            
+            // 画像スライドのHTML生成
+            items += `
+              <div class="carousel-item ${active}">
+                <img src="${img.url}" class="d-block w-100 img-fluid" alt="${img.alt}">
+              </div>`;
+          });
+
+          // 生成したHTMLを一括でDOMに挿入（jQueryの .html() を使用）
+          $('#carousel-indicators-container').html(indicators);
+          $('#carousel-inner-container').html(items);
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+          console.error('カルーセルの生成に失敗しました:', textStatus);
+          
+          // エラー時のフォールバック画像
+          $('#carousel-inner-container').html(`
+            <div class="carousel-item active">
+              <img src="/topimage.jpg" class="d-block w-100 img-fluid" alt="トップ画像">
+            </div>
+          `);
+        });
+    });
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YWS22VDB37"></script>
   <script>
