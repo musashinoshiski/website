@@ -92,7 +92,7 @@
   <script>
     $(function() {
       // $.getでYAMLを取得し、done(成功時)とfail(失敗時)で処理を分ける
-      $.get('topimages.yml')
+      $.get('/topimages.yml')
         .done(function(yamlText) {
           // YAMLをパースして配列を取得
           const images = jsyaml.load(yamlText).images;
