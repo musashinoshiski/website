@@ -1,0 +1,6 @@
+name = "msa-website"
+preview_urls = true
+previews = { }
+
+[assets]
+directory = "./docs"
