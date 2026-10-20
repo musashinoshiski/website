@@ -1,6 +1,7 @@
 name = "msa-website"
 preview_urls = true
 previews = { }
+compatibility_date = "2026-10-19"
 
 [assets]
 directory = "./docs"
