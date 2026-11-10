@@ -39,7 +39,7 @@
 ## 申込方法
 以下のいずれか
 1. Web申し込み\
-    <a href="https://forms.gle/Mfyj354kaQeZif2bA">![](./webformbutton.png) https://forms.gle/Mfyj354kaQeZif2bA</a>
+    <a href="https://forms.gle/Mfyj354kaQeZif2bA">![](./webformbutton.png) https://forms.gle/Mfyj354kaQeZif2bA ![](./applyform-qr.png)</a>
 1. 申込書に必要事項を記入のうえ、下記まで直接持参し申し込み\
     <a href="./applyform.pdf">![](./pdfdownloadbutton.png)</a>
     - 受付場所 武蔵野市スポーツ協会（総合体育館３F）
