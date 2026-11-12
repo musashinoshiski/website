@@ -18,7 +18,7 @@
 志賀高原一ノ瀬スキー場（長野県）
 
 ## 宿舎
-「ホテル大六」\
+[ホテル大六](https://shiga-dairoku.com/)\
 〒381-0401　長野県下高井郡山ノ内町志賀高原一ノ瀬 ([地図](https://maps.app.goo.gl/7aVXfEvFT6QNpZRVA))\
 TEL: 0269-34-2210 
 
