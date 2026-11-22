@@ -14,11 +14,15 @@
 </head>
 
 <body style="background-image: url(/common/img/bgsnow.gif); background-position: top left; background-size: 1; background-repeat: yes;">
-  <header class="container">
-    <div class="row" style="background-image: linear-gradient(to right, rgba(0, 0, 128, 1), rgba(220, 220, 255, 1)); background-position: top left; background-size: 200%; background-repeat: repeat;">
-      <div class="mr-auto order-1 order-md-1 col-md-3"><a href="/"><img class="img-fluid d-block" src="/common/img/msaicon200x150.png" alt="武蔵野市スキー連盟のロゴ"></a></div>
-      <div class="px-md-5 d-flex flex-column align-items-start justify-content-center order-1 order-md-2 col-md-9">
-        <h1><a href="/" class="text-white">武蔵野市スキー連盟</a></h1>
+  <header class="container mt-0 p-0">
+    <div class="d-flex align-items-stretch flex-nowrap">
+      <a href="/" style="flex: 0 1 200px; min-width: 60px; max-width: 25vw;">
+        <img src="/common/img/msaicon200x150.png" alt="武蔵野市スキー連盟のロゴ" class="w-100 h-auto">
+      </a>
+      <div class="d-flex align-items-center" style="flex: 0 1 auto; min-width: 75vw; background-image: linear-gradient(to right, rgba(0, 0, 128, 1), rgba(220, 220, 255, 1));">
+        <h1 class="m-0 px-1 text-nowrap" style="font-size: clamp(1.2rem, 5vw, 2.5rem);">
+          <a href="/" class="text-white text-nowrap">武蔵野市スキー連盟</a>
+        </h1>
       </div>
     </div>
   </header>
@@ -37,7 +41,18 @@
     </nav>
     <main>
       <section class="row">
-        <img class="col-md-12 mt-2 img-fluid d-block mx-auto w-100" src="/topimage.jpg" alt="武蔵野市スキー連盟Webサイトのトップページの画像">
+        <div id="hero-carousel" class="carousel slide mb-4" data-bs-ride="carousel" data-bs-interval="5000">
+          <div class="carousel-indicators" id="carousel-indicators-container"></div>
+          <div class="carousel-inner" id="carousel-inner-container"></div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#hero-carousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">&lt;</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#hero-carousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">&gt;</span>
+          </button>
+        </div>
       </section>
       <div class="row">
         <section class="col-md-6">
@@ -76,6 +91,58 @@
         console.error("error raised:", error);
       }
     };
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      try {
+        const response = await fetch('/topimages.yml');
+        if (!response.ok) throw new Error("failed to fetch YAML file");
+        const yamlText = await response.text();
+
+        const data = jsyaml.load(yamlText);
+        const images = data.images;
+
+        const innerContainer = document.getElementById('carousel-inner-container');
+        const indicatorsContainer = document.getElementById('carousel-indicators-container');
+
+        images.forEach((image, index) => {
+          const indicator = document.createElement('button');
+          indicator.type = 'button';
+          indicator.dataset.bsTarget = '#hero-carousel';
+          indicator.dataset.bsSlideTo = index;
+          indicator.setAttribute('aria-label', `Slide ${index + 1}`);
+          
+          const item = document.createElement('div');
+          item.className = 'carousel-item';
+          
+          const img = document.createElement('img');
+          img.src = image.url;
+          img.alt = image.alt;
+          img.className = 'd-block w-100 img-fluid';
+          
+          if (index === 0) {
+            indicator.classList.add('active');
+            indicator.setAttribute('aria-current', 'true');
+            item.classList.add('active');
+          }
+
+          item.appendChild(img);
+          indicatorsContainer.appendChild(indicator);
+          innerContainer.appendChild(item);
+        });
+
+      } catch (error) {
+        console.error('error happened in generating carousel:', error);
+        
+        // fallbacking
+        document.getElementById('carousel-inner-container').innerHTML = `
+          <div class="carousel-item active">
+            <img src="/topimage.jpg" class="d-block w-100 img-fluid" alt="トップ画像">
+          </div>
+        `;
+      }
+    });
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YWS22VDB37"></script>
   <script>
